@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Events - Live Events Finder</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+
+<nav class="navbar glass">
+  <div class="navbar-inner">
+    <a href="index.html" class="brand">Live Events Finder</a>
+
+    <div class="nav-links">
+      <a class="nav-link" href="index.html">Home</a>
+      <a class="nav-link active" href="events.html">Events</a>
+      <a class="nav-link" href="festivals.html">Festivals</a>
+      <a class="nav-link" href="about.html">About</a>
+      <a class="nav-link" href="my-events.html">My Events</a>
+    </div>
+
+    <div class="nav-actions">
+      <a class="btn btn-secondary" href="login.html">Login</a>
+      <a class="btn btn-primary" href="signup.html">Sign Up</a>
+    </div>
+  </div>
+</nav>
+
+<section class="section">
+  <div class="container">
+    <h1 class="section-title">All Events</h1>
+    <p class="section-copy">
+      Search for artists and discover upcoming shows.
+    </p>
+
+    <!-- SEARCH -->
+    <div class="glass form-card" style="max-width: 100%;">
+      <div class="grid" style="grid-template-columns: 1fr auto;">
+        <input id="artist-search" type="text" placeholder="Search artist (e.g. Drake)">
+        <button class="btn btn-primary" id="search-btn">Search</button>
+      </div>
+    </div>
+
+    <!-- RESULTS -->
+    <div class="grid grid-3" id="events-grid" style="margin-top: 28px;"></div>
+  </div>
+</section>
+
+<script src="app.js"></script>
+</body>
+</html>

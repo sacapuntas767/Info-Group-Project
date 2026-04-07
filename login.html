@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Live Events Finder</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+
+<nav class="navbar glass">
+  <div class="navbar-inner">
+    <a href="index.html" class="brand">Live Events Finder</a>
+
+    <div class="nav-links">
+      <a class="nav-link" href="index.html">Home</a>
+      <a class="nav-link" href="events.html">Events</a>
+      <a class="nav-link" href="festivals.html">Festivals</a>
+      <a class="nav-link" href="about.html">About</a>
+      <a class="nav-link" href="my-events.html">My Events</a>
+    </div>
+
+    <div class="nav-actions" id="auth-actions">
+      <a class="btn btn-secondary" href="login.html">Login</a>
+      <a class="btn btn-primary" href="signup.html">Sign Up</a>
+    </div>
+  </div>
+</nav>
+
+<section class="section">
+  <div class="container">
+    <div class="glass form-card">
+      <h1 class="section-title" style="margin-bottom: 8px;">Welcome Back</h1>
+      <p class="section-copy">Log in to access your favorites and saved events.</p>
+
+      <form id="login-form">
+        <div class="form-group">
+          <label for="login-identifier">Username or Email</label>
+          <input id="login-identifier" type="text" placeholder="bob or bob@mail.com" required>
+        </div>
+
+        <div class="form-group">
+          <label for="login-password">Password</label>
+          <input id="login-password" type="password" placeholder="bobpass" required>
+        </div>
+
+        <button class="btn btn-primary" type="submit" style="width: 100%;">Log In</button>
+      </form>
+
+      <p style="margin-top: 18px; color: #94a3b8;">Demo login: <strong>bob</strong> / <strong>bobpass</strong></p>
+      <p style="margin-top: 12px; color: #94a3b8;">Don’t have an account? <a href="signup.html">Sign up</a></p>
+    </div>
+  </div>
+</section>
+
+<script src="app.js"></script>
+</body>
+</html>

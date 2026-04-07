@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up - Live Events Finder</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+
+<nav class="navbar glass">
+  <div class="navbar-inner">
+    <a href="index.html" class="brand">Live Events Finder</a>
+
+    <div class="nav-links">
+      <a class="nav-link" href="index.html">Home</a>
+      <a class="nav-link" href="events.html">Events</a>
+      <a class="nav-link" href="festivals.html">Festivals</a>
+      <a class="nav-link" href="about.html">About</a>
+      <a class="nav-link" href="my-events.html">My Events</a>
+    </div>
+
+    <div class="nav-actions" id="auth-actions">
+      <a class="btn btn-secondary" href="login.html">Login</a>
+      <a class="btn btn-primary" href="signup.html">Sign Up</a>
+    </div>
+  </div>
+</nav>
+
+<section class="section">
+  <div class="container">
+    <div class="glass form-card">
+      <h1 class="section-title" style="margin-bottom: 8px;">Create an Account</h1>
+      <p class="section-copy">Sign up to save events and build your concert shortlist.</p>
+
+      <form id="signup-form">
+        <div class="form-group">
+          <label for="signup-name">Full Name</label>
+          <input id="signup-name" type="text" placeholder="John Doe" required>
+        </div>
+
+        <div class="form-group">
+          <label for="signup-username">Username</label>
+          <input id="signup-username" type="text" placeholder="johndoe" required>
+        </div>
+
+        <div class="form-group">
+          <label for="signup-email">Email</label>
+          <input id="signup-email" type="email" placeholder="you@example.com" required>
+        </div>
+
+        <div class="form-group">
+          <label for="signup-password">Password</label>
+          <input id="signup-password" type="password" placeholder="••••••••" required>
+        </div>
+
+        <div class="form-group">
+          <label for="signup-confirm">Confirm Password</label>
+          <input id="signup-confirm" type="password" placeholder="••••••••" required>
+        </div>
+
+        <button class="btn btn-primary" type="submit" style="width: 100%;">Sign Up</button>
+      </form>
+
+      <p style="margin-top: 12px; color: #94a3b8;">Already have an account? <a href="login.html">Log in</a></p>
+    </div>
+  </div>
+</section>
+
+<script src="app.js"></script>
+</body>
+</html>
