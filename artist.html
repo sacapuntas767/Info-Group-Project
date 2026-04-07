@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artist Spotlight - Live Events Finder</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+
+<nav class="navbar glass">
+  <div class="navbar-inner">
+    <a href="index.html" class="brand">Live Events Finder</a>
+
+    <div class="nav-links">
+      <a class="nav-link" href="index.html">Home</a>
+      <a class="nav-link" href="events.html">Events</a>
+      <a class="nav-link" href="festivals.html">Festivals</a>
+      <a class="nav-link" href="my-events.html">My Events</a>
+      <a class="nav-link" href="about.html">About</a>
+    </div>
+
+    <div class="nav-actions" id="auth-actions">
+      <a class="btn btn-secondary" href="login.html">Login</a>
+      <a class="btn btn-primary" href="signup.html">Sign Up</a>
+    </div>
+  </div>
+</nav>
+
+<section class="section">
+  <div class="container">
+    <a href="festivals.html" class="btn btn-secondary" style="margin-bottom: 24px; display: inline-flex;">← Back to Festivals</a>
+
+    <div class="glass hero-card" style="display: grid; grid-template-columns: minmax(260px, 340px) 1fr; gap: 28px; align-items: center;">
+      <img
+        id="artist-image"
+        src="https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=1200&q=80"
+        alt="Artist spotlight"
+        style="width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 24px;"
+      >
+
+      <div>
+        <p style="margin: 0 0 8px; color: #94a3b8; letter-spacing: 0.06em; text-transform: uppercase; font-size: 0.85rem;">Artist Spotlight</p>
+        <h1 id="artist-name" class="section-title" style="margin-bottom: 10px;">Featured Artist</h1>
+        <p id="artist-tagline" class="section-copy" style="margin-bottom: 16px; max-width: 720px;">
+          Explore the artist behind the lineup, preview their biggest tracks, and decide whether this performance belongs on your shortlist.
+        </p>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px;">
+          <span class="glass" style="padding: 10px 14px; border-radius: 999px; color: #e2e8f0;">Top tracks</span>
+          <span class="glass" style="padding: 10px 14px; border-radius: 999px; color: #e2e8f0;">30s previews</span>
+          <span class="glass" style="padding: 10px 14px; border-radius: 999px; color: #e2e8f0;">Festival context</span>
+        </div>
+
+        <div class="hero-actions">
+          <button class="btn btn-primary" type="button" id="deezer-search-btn">Load Artist Tracks</button>
+          <a class="btn btn-secondary" href="#artist-tracks-grid">Jump to Tracks</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top: 12px;">
+  <div class="container">
+    <div class="glass hero-card">
+      <h2 class="section-title" style="font-size: clamp(1.5rem, 2.4vw, 2.1rem); margin-bottom: 12px;">Why this artist matters</h2>
+      <p id="artist-context" class="section-copy" style="margin-bottom: 0;">
+        This page is meant to help users get familiar with artists they may not already know before committing to an event or festival. A quick glance at the artist profile and top songs gives the user more confidence when deciding whether to save the event or lock in attendance.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top: 12px;">
+  <div class="container">
+    <div style="display: flex; align-items: end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 18px;">
+      <div>
+        <h2 class="section-title" style="font-size: clamp(1.5rem, 2.4vw, 2.1rem); margin-bottom: 10px;">Top Tracks</h2>
+        <p class="section-copy" style="margin-bottom: 0;">Preview songs and get a feel for the artist before you commit.</p>
+      </div>
+    </div>
+
+    <div class="glass" style="padding: 18px 20px; border-radius: 20px; margin-bottom: 18px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between;">
+      <p id="artist-status" style="margin: 0; color: #cbd5e1;">Ready to load Deezer-backed artist tracks, top songs, and previews.</p>
+      <a id="ticket-link" class="btn btn-secondary" href="events.html">Find Matching Event</a>
+    </div>
+
+    <div class="grid grid-3" id="artist-tracks-grid">
+      <article class="event-card glass">
+        <div class="event-content">
+          <h3 class="event-title">Top tracks will appear here</h3>
+          <p class="meta">Next step is wiring this page to the Deezer artist search and top-track response. Once connected, this area should show album art, song title, ranking, and 30-second previews for the selected performer.</p>
+          <div class="card-actions">
+            <button class="btn btn-primary" type="button" id="artist-preview-demo-btn">Preview Experience</button>
+            <a class="btn btn-secondary" href="festivals.html">Back to Festivals</a>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <h3>Live Events Finder</h3>
+        <p>Discover amazing live music events and never miss your favorite artists performing near you.</p>
+      </div>
+
+      <div>
+        <h3>Quick Links</h3>
+        <p><a href="index.html">Home</a></p>
+        <p><a href="events.html">Events</a></p>
+        <p><a href="festivals.html">Festivals</a></p>
+        <p><a href="about.html">About Us</a></p>
+      </div>
+
+      <div>
+        <h3>Contact</h3>
+        <p>info@liveeventsfinder.com</p>
+        <p>+1 (234) 567-890</p>
+        <p>123 Music Street, Concert City, CA 90210</p>
+      </div>
+    </div>
+
+    <p style="margin-top: 24px; color: #94a3b8;">
+      © 2026 Live Events Finder. All rights reserved.
+    </p>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

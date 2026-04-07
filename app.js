@@ -1,4 +1,96 @@
 const APP_ID = "test_app";
+const ALL_MOCK_EVENTS = [
+    {
+        id: "1",
+        title: "After Hours Live",
+        datetime: "2026-04-20T20:00:00",
+        artist: {
+            name: "The Weeknd",
+            image_url: "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=1200&q=80"
+        },
+        venue: {
+            name: "Madison Square Garden",
+            city: "New York",
+            region: "NY",
+            country: "USA"
+        }
+    },
+    {
+        id: "2",
+        title: "Starboy Tour",
+        datetime: "2026-05-02T19:30:00",
+        artist: {
+            name: "The Weeknd",
+            image_url: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=1200&q=80"
+        },
+        venue: {
+            name: "Crypto.com Arena",
+            city: "Los Angeles",
+            region: "CA",
+            country: "USA"
+        }
+    },
+    {
+        id: "3",
+        title: "Night Drive Set",
+        datetime: "2026-05-11T21:00:00",
+        artist: {
+            name: "The Midnight",
+            image_url: "https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&fit=crop&w=1200&q=80"
+        },
+        venue: {
+            name: "Red Rocks Amphitheatre",
+            city: "Morrison",
+            region: "CO",
+            country: "USA"
+        }
+    },
+    {
+        id: "4",
+        title: "Golden Hour Sessions",
+        datetime: "2026-06-08T19:00:00",
+        artist: {
+            name: "Kacey Musgraves",
+            image_url: "https://images.unsplash.com/photo-1503095396549-807759245b35?auto=format&fit=crop&w=1200&q=80"
+        },
+        venue: {
+            name: "Ryman Auditorium",
+            city: "Nashville",
+            region: "TN",
+            country: "USA"
+        }
+    },
+    {
+        id: "5",
+        title: "Neon Skyline Tour",
+        datetime: "2026-06-20T20:30:00",
+        artist: {
+            name: "CHVRCHES",
+            image_url: "https://images.unsplash.com/photo-1501612780327-45045538702b?auto=format&fit=crop&w=1200&q=80"
+        },
+        venue: {
+            name: "House of Blues",
+            city: "Chicago",
+            region: "IL",
+            country: "USA"
+        }
+    },
+    {
+        id: "6",
+        title: "Pacific Nights",
+        datetime: "2026-07-03T21:00:00",
+        artist: {
+            name: "ODESZA",
+            image_url: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1200&q=80"
+        },
+        venue: {
+            name: "WaMu Theater",
+            city: "Seattle",
+            region: "WA",
+            country: "USA"
+        }
+    }
+];
 let currentEvents = JSON.parse(localStorage.getItem("mockEvents")) || [];
 let currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
 
@@ -134,57 +226,9 @@ console.log("app.js connected");
 async function fetchArtistEvents(artistName) {
     console.log("Fetching events for:", artistName);
 
-    const mockEvents = [
-        {
-            id: "1",
-            title: "After Hours Live",
-            datetime: "2026-04-20T20:00:00",
-            artist: {
-                name: "The Weeknd",
-                image_url: "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=1200&q=80"
-            },
-            venue: {
-                name: "Madison Square Garden",
-                city: "New York",
-                region: "NY",
-                country: "USA"
-            }
-        },
-        {
-            id: "2",
-            title: "Starboy Tour",
-            datetime: "2026-05-02T19:30:00",
-            artist: {
-                name: "The Weeknd",
-                image_url: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=1200&q=80"
-            },
-            venue: {
-                name: "Crypto.com Arena",
-                city: "Los Angeles",
-                region: "CA",
-                country: "USA"
-            }
-        },
-        {
-            id: "3",
-            title: "Night Drive Set",
-            datetime: "2026-05-11T21:00:00",
-            artist: {
-                name: "The Midnight",
-                image_url: "https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&fit=crop&w=1200&q=80"
-            },
-            venue: {
-                name: "Red Rocks Amphitheatre",
-                city: "Morrison",
-                region: "CO",
-                country: "USA"
-            }
-        }
-    ];
-
     const searchTerm = artistName.toLowerCase();
 
-    currentEvents = mockEvents.filter(event =>
+    currentEvents = ALL_MOCK_EVENTS.filter(event =>
         event.artist.name.toLowerCase().includes(searchTerm) ||
         event.title.toLowerCase().includes(searchTerm)
     );
@@ -266,7 +310,19 @@ document.addEventListener("DOMContentLoaded", async () => {
             renderEventsPage();
         });
     }
-    renderMyEventsPage();
+
+    const eventsGrid = document.getElementById("events-grid");
+    if (eventsGrid && currentEvents.length === 0) {
+        currentEvents = ALL_MOCK_EVENTS;
+        localStorage.setItem("mockEvents", JSON.stringify(currentEvents));
+        renderEventsPage();
+    } else if (eventsGrid) {
+        renderEventsPage();
+    }
+
+    if (document.getElementById("favorites-list") && document.getElementById("going-list")) {
+        renderMyEventsPage();
+    }
 
     const loginForm = document.getElementById("login-form");
     if (loginForm) {
@@ -291,6 +347,33 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 });
+
+function getCityFromCoordinates(lat, lon) {
+    if (lat >= 40 && lat <= 41.5 && lon >= -75 && lon <= -73) {
+        return "New York";
+    }
+    if (lat >= 33 && lat <= 35 && lon >= -119 && lon <= -117) {
+        return "Los Angeles";
+    }
+    if (lat >= 39 && lat <= 40.5 && lon >= -106 && lon <= -104) {
+        return "Morrison";
+    }
+    if (lat >= 35 && lat <= 37 && lon >= -88 && lon <= -86) {
+        return "Nashville";
+    }
+    if (lat >= 41 && lat <= 43 && lon >= -89 && lon <= -87) {
+        return "Chicago";
+    }
+    if (lat >= 47 && lat <= 48.5 && lon >= -123 && lon <= -121) {
+        return "Seattle";
+    }
+    return null;
+}
+
+function filterEventsByCity(city) {
+    currentEvents = ALL_MOCK_EVENTS.filter(event => event.venue.city === city);
+    localStorage.setItem("mockEvents", JSON.stringify(currentEvents));
+}
 
 function renderEventsPage() {
     const container = document.getElementById("events-grid");
@@ -490,37 +573,31 @@ function getUserLocation() {
             const lat = position.coords.latitude;
             const lon = position.coords.longitude;
 
-            console.log("User location:", lat, lon);
-            showToast("Location detected");
-
-            // For now just reload featured events
-            fetchArtistEvents("The Weeknd");
-            renderFeaturedEvents();
-        },
-        () => {
-            showToast("Unable to get location");
-        }
-    );
-}
-
-function getUserLocation() {
-    if (!navigator.geolocation) {
-        showToast("Geolocation not supported");
-        return;
-    }
-
-    navigator.geolocation.getCurrentPosition(
-        (position) => {
-            const lat = position.coords.latitude;
-            const lon = position.coords.longitude;
-
             console.log("Location:", lat, lon);
 
             showToast("Location detected");
 
-            // Temporary logic (we'll improve next)
-            fetchArtistEvents("The Weeknd");
+            const userCity = getCityFromCoordinates(lat, lon);
+
+            if (!userCity) {
+                currentEvents = ALL_MOCK_EVENTS;
+                localStorage.setItem("mockEvents", JSON.stringify(currentEvents));
+                showToast("Showing popular events");
+                renderFeaturedEvents();
+                renderEventsPage();
+                return;
+            }
+
+            filterEventsByCity(userCity);
+
+            if (currentEvents.length === 0) {
+                showToast(`No nearby events found for ${userCity}`);
+            } else {
+                showToast(`Showing events near ${userCity}`);
+            }
+
             renderFeaturedEvents();
+            renderEventsPage();
         },
         () => {
             showToast("Unable to access location");
