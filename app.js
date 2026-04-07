@@ -502,3 +502,28 @@ function getUserLocation() {
         }
     );
 }
+
+function getUserLocation() {
+    if (!navigator.geolocation) {
+        showToast("Geolocation not supported");
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+
+            console.log("Location:", lat, lon);
+
+            showToast("Location detected");
+
+            // Temporary logic (we'll improve next)
+            fetchArtistEvents("The Weeknd");
+            renderFeaturedEvents();
+        },
+        () => {
+            showToast("Unable to access location");
+        }
+    );
+}
