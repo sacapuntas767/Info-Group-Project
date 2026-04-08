@@ -85,6 +85,18 @@ img {
     background: rgba(255, 255, 255, 0.08);
     color: #fff;
 }
+.logo {
+    text-decoration: none;
+    color: inherit;
+}
+
+.nav-logo {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    object-fit: cover;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
 
 .brand {
     font-size: 1.2rem;

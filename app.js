@@ -249,15 +249,19 @@ console.log("app.js connected");
 async function fetchArtistEvents(artistName) {
     console.log("Fetching events for:", artistName);
 
-    const searchTerm = artistName.toLowerCase();
+    const searchTerm = artistName.toLowerCase().trim();
 
     currentEvents = ALL_MOCK_EVENTS.filter(event =>
         event.artist.name.toLowerCase().includes(searchTerm) ||
-        event.title.toLowerCase().includes(searchTerm)
+        event.title.toLowerCase().includes(searchTerm) ||
+        event.venue.city.toLowerCase().includes(searchTerm) ||
+        event.venue.region.toLowerCase().includes(searchTerm)
     );
 
     console.log("Filtered mock response:", currentEvents);
     localStorage.setItem("mockEvents", JSON.stringify(currentEvents));
+
+    return currentEvents;
 }
 
 function renderFeaturedEvents() {
@@ -326,12 +330,16 @@ document.addEventListener("DOMContentLoaded", async () => {
             const artistInput = document.getElementById("artist-search").value.trim();
 
             if (!artistInput) {
-                alert("Enter an artist name");
+                resetEventsPage();
                 return;
             }
 
-            await fetchArtistEvents(artistInput);
+            const matches = await fetchArtistEvents(artistInput);
             renderEventsPage();
+
+            if (matches.length === 0) {
+                showToast(`No events found for "${artistInput}"`);
+            }
         });
     }
 
@@ -459,6 +467,21 @@ function renderEventsPage() {
     if (!container) return;
 
     container.innerHTML = "";
+
+    if (currentEvents.length === 0) {
+        container.innerHTML = `
+            <article class="event-card glass">
+                <div class="event-content">
+                    <h3 class="event-title">No matching events found</h3>
+                    <p class="meta">Try searching for an artist, event title, city, or region from the available listings.</p>
+                    <div class="card-actions">
+                        <button class="btn btn-primary" type="button" onclick="resetEventsPage()">Show All Events</button>
+                    </div>
+                </div>
+            </article>
+        `;
+        return;
+    }
 
     currentEvents.forEach(event => {
         const card = document.createElement("article");
@@ -887,3 +910,9 @@ function attachPreviewPlayerBehavior() {
     });
 }
 
+
+function resetEventsPage() {
+    currentEvents = ALL_MOCK_EVENTS;
+    localStorage.setItem("mockEvents", JSON.stringify(currentEvents));
+    renderEventsPage();
+}
