@@ -346,6 +346,54 @@ document.addEventListener("DOMContentLoaded", async () => {
             signupUser(name, username, email, password, confirmPassword);
         });
     }
+
+    const artistTitle = document.getElementById("artist-page-title");
+    const artistStatus = document.getElementById("artist-status");
+    const artistName = getArtistNameFromUrl();
+
+    const artistNameHeading = document.getElementById("artist-name");
+    const artistTagline = document.getElementById("artist-tagline");
+    const artistContext = document.getElementById("artist-context");
+    const ticketLink = document.getElementById("ticket-link");
+
+    if (artistNameHeading && artistName) {
+        artistNameHeading.textContent = artistName;
+    }
+
+    if (artistTitle && artistName) {
+        artistTitle.textContent = artistName;
+    }
+
+    if (artistStatus && artistName) {
+        artistStatus.textContent = `Loading Deezer-backed tracks and previews for ${artistName}.`;
+    }
+
+    if (artistTagline && artistName) {
+        artistTagline.textContent = `Explore ${artistName}'s biggest tracks, preview their sound, and decide whether this artist belongs on your shortlist.`;
+    }
+
+    if (artistContext && artistName) {
+        artistContext.textContent = `${artistName} is part of the discovery layer of Live Events Finder. This page helps users get familiar with the performer before deciding whether to save the event, mark attendance, or continue exploring similar artists.`;
+    }
+
+    if (ticketLink && artistName) {
+        ticketLink.href = "events.html";
+        ticketLink.textContent = `Find ${artistName} Events`;
+    }
+
+    const deezerSearchBtn = document.getElementById("deezer-search-btn");
+    if (deezerSearchBtn) {
+        deezerSearchBtn.addEventListener("click", () => {
+            loadArtistTracks();
+        });
+    }
+
+    const artistPreviewDemoBtn = document.getElementById("artist-preview-demo-btn");
+    if (artistPreviewDemoBtn) {
+        artistPreviewDemoBtn.addEventListener("click", () => {
+            loadArtistTracks();
+        });
+    }
 });
 
 function getCityFromCoordinates(lat, lon) {
@@ -604,3 +652,117 @@ function getUserLocation() {
         }
     );
 }
+
+function getArtistNameFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("name");
+}
+
+function fetchDeezerJsonp(url) {
+    return new Promise((resolve, reject) => {
+        const callbackName = `deezerCallback_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+
+        window[callbackName] = (data) => {
+            resolve(data);
+            delete window[callbackName];
+            script.remove();
+        };
+
+        const script = document.createElement("script");
+        script.src = `${url}${url.includes("?") ? "&" : "?"}output=jsonp&callback=${callbackName}`;
+        script.onerror = () => {
+            reject(new Error("Deezer request failed"));
+            delete window[callbackName];
+            script.remove();
+        };
+
+        document.body.appendChild(script);
+    });
+}
+
+async function loadArtistTracks() {
+    const artistName = getArtistNameFromUrl();
+    const artistStatus = document.getElementById("artist-status");
+    const tracksGrid = document.getElementById("artist-tracks-grid");
+    const artistImage = document.getElementById("artist-image");
+
+    if (!artistName || !artistStatus || !tracksGrid) return;
+
+    artistStatus.textContent = `Searching Deezer for ${artistName}...`;
+    tracksGrid.innerHTML = "";
+
+    try {
+        const searchData = await fetchDeezerJsonp(
+            `https://api.deezer.com/search/artist?q=${encodeURIComponent(artistName)}`
+        );
+
+        if (!searchData.data || searchData.data.length === 0) {
+            artistStatus.textContent = `No Deezer match found for ${artistName}.`;
+            tracksGrid.innerHTML = `
+                <article class="event-card glass">
+                    <div class="event-content">
+                        <h3 class="event-title">No tracks found</h3>
+                        <p class="meta">We couldn’t find Deezer track data for this artist right now.</p>
+                    </div>
+                </article>
+            `;
+            return;
+        }
+
+        const matchedArtist = searchData.data[0];
+
+        const artistPageTitle = document.getElementById("artist-page-title");
+        const artistNameHeading = document.getElementById("artist-name");
+
+        if (artistPageTitle) artistPageTitle.textContent = matchedArtist.name;
+        if (artistNameHeading) artistNameHeading.textContent = matchedArtist.name;
+        if (artistImage && matchedArtist.picture_xl) artistImage.src = matchedArtist.picture_xl;
+
+        artistStatus.textContent = `Loading top tracks for ${matchedArtist.name}...`;
+
+        const tracksData = await fetchDeezerJsonp(
+            `https://api.deezer.com/artist/${matchedArtist.id}/top?limit=5`
+        );
+
+        if (!tracksData.data || tracksData.data.length === 0) {
+            artistStatus.textContent = `No top tracks available for ${matchedArtist.name}.`;
+            return;
+        }
+
+        artistStatus.textContent = `Showing Deezer top tracks for ${matchedArtist.name}.`;
+
+        tracksGrid.innerHTML = tracksData.data.map((track, index) => `
+            <article class="event-card glass">
+                <img class="event-image" src="${track.album.cover_big}" alt="${track.title}">
+                <div class="event-content">
+                    <h3 class="event-title">#${index + 1} ${track.title}</h3>
+                    <p class="event-subtitle">${track.artist.name}</p>
+
+                    <div class="meta">
+                        <div>Album: ${track.album.title}</div>
+                        <div>Duration: ${Math.floor(track.duration / 60)}:${String(track.duration % 60).padStart(2, "0")}</div>
+                        <div>Preview available: ${track.preview ? "Yes" : "No"}</div>
+                    </div>
+
+                    <div class="card-actions">
+                        ${track.preview ? `<audio controls style="width: 100%;">
+                            <source src="${track.preview}" type="audio/mpeg">
+                        </audio>` : `<span style="color: #94a3b8;">No preview available</span>`}
+                    </div>
+                </div>
+            </article>
+        `).join("");
+    } catch (error) {
+        console.error(error);
+        artistStatus.textContent = "Could not load Deezer artist data right now.";
+        tracksGrid.innerHTML = `
+            <article class="event-card glass">
+                <div class="event-content">
+                    <h3 class="event-title">Something went wrong</h3>
+                    <p class="meta">The Deezer request failed. Try again in a moment.</p>
+                </div>
+            </article>
+        `;
+    }
+}
+
