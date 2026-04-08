@@ -91,6 +91,29 @@ const ALL_MOCK_EVENTS = [
         }
     }
 ];
+
+const EVENT_RATINGS = {
+    "1": { score: 4.8, count: 312 },
+    "2": { score: 4.6, count: 248 },
+    "3": { score: 4.7, count: 186 },
+    "4": { score: 4.9, count: 402 },
+    "5": { score: 4.5, count: 221 },
+    "6": { score: 4.8, count: 367 }
+};
+
+function getEventRatingText(eventId) {
+    const rating = EVENT_RATINGS[eventId];
+    if (!rating) return "★ New event";
+    return `★ ${rating.score} · ${rating.count} attendee ratings`;
+}
+
+function formatPreviewTime(seconds) {
+    const safeSeconds = Math.max(0, Math.floor(seconds || 0));
+    const mins = Math.floor(safeSeconds / 60);
+    const secs = safeSeconds % 60;
+    return `${mins}:${String(secs).padStart(2, "0")}`;
+}
+
 let currentEvents = JSON.parse(localStorage.getItem("mockEvents")) || [];
 let currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
 
@@ -258,6 +281,7 @@ function renderFeaturedEvents() {
                     <div>
                         <h3 class="event-title">${event.title}</h3>
                         <p class="event-subtitle">${event.artist.name}</p>
+                        <p class="rating-line">${getEventRatingText(event.id)}</p>
                     </div>
                 </div>
 
@@ -381,6 +405,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         ticketLink.textContent = `Find ${artistName} Events`;
     }
 
+    const aboutSecondaryCta = document.getElementById("about-secondary-cta");
+    if (aboutSecondaryCta && currentUser) {
+        aboutSecondaryCta.href = "my-events.html";
+        aboutSecondaryCta.textContent = "Go to My Events";
+    }
+
     const deezerSearchBtn = document.getElementById("deezer-search-btn");
     if (deezerSearchBtn) {
         deezerSearchBtn.addEventListener("click", () => {
@@ -442,6 +472,7 @@ function renderEventsPage() {
             <div class="event-content">
                 <h3 class="event-title">${event.title}</h3>
                 <p class="event-subtitle">${event.artist.name}</p>
+                <p class="rating-line">${getEventRatingText(event.id)}</p>
 
                 <div class="meta">
                     <div>${new Date(event.datetime).toLocaleString([], {
@@ -550,6 +581,7 @@ function createSavedCard(event) {
         <div class="event-content">
             <h3 class="event-title">${event.title}</h3>
             <p class="event-subtitle">${event.artist.name}</p>
+            <p class="rating-line">${getEventRatingText(event.id)}</p>
 
             <div class="meta">
                 <div>${new Date(event.datetime).toLocaleString([], {
@@ -745,13 +777,20 @@ async function loadArtistTracks() {
                     </div>
 
                     <div class="card-actions">
-                        ${track.preview ? `<audio controls style="width: 100%;">
-                            <source src="${track.preview}" type="audio/mpeg">
-                        </audio>` : `<span style="color: #94a3b8;">No preview available</span>`}
+                        <div class="preview-player" data-preview="${track.preview || ""}">
+                            <button class="preview-btn ${track.preview ? "" : "is-disabled"}" type="button">
+                                ${track.preview ? "Play Preview" : "No Preview"}
+                            </button>
+                            <div class="preview-progress">
+                                <span class="preview-progress-fill"></span>
+                            </div>
+                            <span class="preview-time">0:00 / 0:30</span>
+                        </div>
                     </div>
                 </div>
             </article>
         `).join("");
+        attachPreviewPlayerBehavior();
     } catch (error) {
         console.error(error);
         artistStatus.textContent = "Could not load Deezer artist data right now.";
@@ -764,5 +803,87 @@ async function loadArtistTracks() {
             </article>
         `;
     }
+}
+
+let activePreviewAudio = null;
+let activePreviewButton = null;
+let activePreviewFill = null;
+let activePreviewTime = null;
+
+function resetActivePreviewUi() {
+    if (activePreviewButton) {
+        activePreviewButton.textContent = "Play Preview";
+        activePreviewButton.classList.remove("is-paused");
+    }
+    if (activePreviewFill) {
+        activePreviewFill.style.width = "0%";
+    }
+    if (activePreviewTime) {
+        activePreviewTime.textContent = "0:00 / 0:30";
+    }
+}
+
+function stopActivePreview() {
+    if (activePreviewAudio) {
+        activePreviewAudio.pause();
+        activePreviewAudio.currentTime = 0;
+    }
+    resetActivePreviewUi();
+    activePreviewAudio = null;
+    activePreviewButton = null;
+    activePreviewFill = null;
+    activePreviewTime = null;
+}
+
+function attachPreviewPlayerBehavior() {
+    document.querySelectorAll(".preview-player").forEach((player) => {
+        const button = player.querySelector(".preview-btn");
+        const fill = player.querySelector(".preview-progress-fill");
+        const timeLabel = player.querySelector(".preview-time");
+        const previewUrl = player.dataset.preview;
+
+        if (!button || !fill || !timeLabel || button.dataset.bound === "true") {
+            return;
+        }
+
+        button.dataset.bound = "true";
+
+        if (!previewUrl) {
+            return;
+        }
+
+        button.addEventListener("click", () => {
+            if (activePreviewAudio && activePreviewButton === button) {
+                stopActivePreview();
+                return;
+            }
+
+            stopActivePreview();
+
+            const audio = new Audio(previewUrl);
+            activePreviewAudio = audio;
+            activePreviewButton = button;
+            activePreviewFill = fill;
+            activePreviewTime = timeLabel;
+
+            button.textContent = "Pause Preview";
+            button.classList.add("is-paused");
+
+            audio.addEventListener("timeupdate", () => {
+                if (!audio.duration) return;
+                const progress = (audio.currentTime / audio.duration) * 100;
+                fill.style.width = `${progress}%`;
+                timeLabel.textContent = `${formatPreviewTime(audio.currentTime)} / ${formatPreviewTime(audio.duration)}`;
+            });
+
+            audio.addEventListener("ended", () => {
+                stopActivePreview();
+            });
+
+            audio.play().catch(() => {
+                stopActivePreview();
+            });
+        });
+    });
 }
 
