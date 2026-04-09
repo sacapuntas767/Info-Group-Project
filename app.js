@@ -5,7 +5,7 @@ const ALL_MOCK_EVENTS = [
         title: "After Hours Live",
         datetime: "2026-04-20T20:00:00",
         artist: {
-            name: "The Weeknd",
+            name: "Drake",
             image_url: "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=1200&q=80"
         },
         venue: {

@@ -516,6 +516,31 @@ input::placeholder {
 }
 
 @media (max-width: 768px) {
+    .artist-hero-card {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+        align-items: start !important;
+    }
+
+    .artist-hero-card img,
+    #artist-image {
+        width: 100% !important;
+        max-width: 260px;
+        margin: 0 auto;
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+    }
+
+    .artist-hero-card .hero-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .artist-hero-card .hero-actions .btn {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+    }
     .hero-card {
         padding: 32px 24px;
     }
