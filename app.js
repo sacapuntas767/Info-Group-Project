@@ -311,6 +311,45 @@ function renderFeaturedEvents() {
 document.addEventListener("DOMContentLoaded", async () => {
     seedDemoUser();
     updateAuthUI();
+    const syncMobileNavState = () => {
+        document.querySelectorAll(".navbar").forEach((navbar) => {
+            const toggle = navbar.querySelector(".nav-toggle");
+            const navLinks = navbar.querySelector(".nav-links");
+            const navActions = navbar.querySelector(".nav-actions");
+            if (!toggle) return;
+
+            const isMobile = window.innerWidth <= 768;
+            const isOpen = navbar.classList.contains("menu-open");
+
+            toggle.hidden = !isMobile;
+
+            if (navLinks) {
+                navLinks.hidden = isMobile ? !isOpen : false;
+            }
+
+            if (navActions) {
+                navActions.hidden = isMobile ? !isOpen : false;
+            }
+
+            if (!isMobile) {
+                navbar.classList.remove("menu-open");
+                toggle.setAttribute("aria-expanded", "false");
+            }
+        });
+    };
+
+    syncMobileNavState();
+
+    document.querySelectorAll(".nav-toggle").forEach((toggle) => {
+        toggle.addEventListener("click", () => {
+            const navbar = toggle.closest(".navbar");
+            if (!navbar || window.innerWidth > 768) return;
+
+            const isOpen = navbar.classList.toggle("menu-open");
+            toggle.setAttribute("aria-expanded", String(isOpen));
+            syncMobileNavState();
+        });
+    });
     const featuredContainer = document.getElementById("featured-events");
     if (featuredContainer) {
         await fetchArtistEvents("The Weeknd");
@@ -432,6 +471,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             loadArtistTracks();
         });
     }
+
+    window.addEventListener("resize", syncMobileNavState);
 });
 
 function getCityFromCoordinates(lat, lon) {

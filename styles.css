@@ -14,7 +14,12 @@ body {
             radial-gradient(circle at top right, rgba(255, 255, 255, 0.06), transparent 25%),
             linear-gradient(135deg, #0b1020, #111827 60%, #0f172a);
     color: #f8fafc;
+    min-width: 320px;
     min-height: 100vh;
+}
+
+main {
+    flex: 1;
 }
 
 a {
@@ -28,8 +33,10 @@ img {
 }
 
 .container {
-    width: min(1200px, calc(100% - 48px));
+    max-width: 1200px;
+    min-width: 300px;
     margin: 0 auto;
+    padding: 0 16px;
 }
 
 .glass {
@@ -56,6 +63,42 @@ img {
     align-items: center;
     justify-content: space-between;
     gap: 20px;
+}
+
+.nav-toggle {
+    display: none;
+    width: 46px;
+    height: 46px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.08);
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.nav-toggle span {
+    display: block;
+    width: 18px;
+    height: 2px;
+    border-radius: 999px;
+    background: #f8fafc;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.navbar.menu-open .nav-toggle span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+}
+
+.navbar.menu-open .nav-toggle span:nth-child(2) {
+    opacity: 0;
+}
+
+.navbar.menu-open .nav-toggle span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
 }
 
 .nav-links,
@@ -477,14 +520,50 @@ input::placeholder {
         padding: 32px 24px;
     }
 
+    .navbar {
+        padding: 16px;
+    }
+
     .navbar-inner {
-        flex-direction: column;
-        align-items: stretch;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .nav-toggle {
+        display: inline-flex;
+        justify-self: end;
     }
 
     .nav-links,
     .nav-actions {
-        flex-wrap: wrap;
+        display: none;
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .navbar.menu-open .nav-links,
+    .navbar.menu-open .nav-actions {
+        display: flex;
+    }
+
+    .nav-links {
+        grid-column: 1 / -1;
+        margin-top: 4px;
+    }
+
+    .nav-actions {
+        grid-column: 1 / -1;
+        margin-top: 2px;
+    }
+
+    .nav-link,
+    .nav-actions .btn {
+        width: 100%;
         justify-content: center;
+        text-align: center;
     }
 }
