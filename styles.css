@@ -303,6 +303,20 @@ img {
     flex-grow: 1;
 }
 
+.meta a {
+    color: #93c5fd;
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: rgba(147, 197, 253, 0.7);
+    text-underline-offset: 3px;
+    transition: color 0.2s ease, text-decoration-color 0.2s ease, opacity 0.2s ease;
+}
+
+.meta a:hover {
+    color: #ffffff;
+    text-decoration-color: rgba(255, 255, 255, 0.9);
+}
+
 .card-actions {
     display: flex;
     gap: 10px;
