@@ -591,4 +591,24 @@ input::placeholder {
         justify-content: center;
         text-align: center;
     }
+
+    .footer {
+        margin-top: 48px;
+        padding: 32px 0;
+    }
+
+    .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .footer h3 {
+        margin: 0 0 10px;
+        font-size: 1.05rem;
+    }
+
+    .footer p {
+        margin: 0 0 8px;
+        line-height: 1.5;
+    }
 }
